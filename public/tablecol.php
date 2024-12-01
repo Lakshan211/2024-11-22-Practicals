@@ -1,46 +1,48 @@
+
 <?php
-//set the db connection file
 require_once 'dbconf.php';
-function PrintTable($tableName,$connect){
-	try{
-		//Query
-		$sql = "SELECT * FROM $tableName";
+function showTable1($tname,$connect,$colnames){
+    try {
+       $sql = "SELECT ";
+       for($i=0; $i<sizeof($colnames)-1; $i++){
+       		$sql.=$colnames[$i].",";
+       }
+      $sql.=$colnames[sizeof($colnames)-1]." FROM $tname "; 
 
-		//execute the query
-		$result = mysqli_query($connect,$sql);
-
-		//check if data exists in the table
-		if(mysqli_num_rows($result)>0){
-			//fetch the data from rows
-			echo "<table border=1>";
-			$col = mysqli_fetch_fields($result);
-			//print the columns
-			echo "<tr>";
-			foreach($col as $value){
-				//return object
-				//print_r($value)
-				echo "<td>$value->name</td>";
-			}
-			echo "</tr>";
-
-			while($row = mysqli_fetch_assoc($result)){
-				//print the data in the table form
-				echo "<tr>";
-				foreach($row as $key => $value){
-					echo "<td>$value</td>";
-				}
-				echo "</tr>";
-			}
-			echo "</table>";
-		}
-		else{
-			echo "No results";
-		}
-	}
-	catch(Exception $e){
-		die($e->getMessage());
-	}
-}
-PrintTable("student",$connect);
-PrintTable("boat",$connect);
+      $result = mysqli_query($connect, $sql);
+     
+        
+            if (mysqli_num_rows($result) > 0) {
+           
+                echo "<table border='1' >";
+                echo "<tr>";
+                
+                $columns = mysqli_fetch_fields($result);
+                foreach ($columns as $column) {
+                   
+        
+                    echo "<th>$column->name</th>";
+                }
+                echo "</tr>";
+        
+                
+                while ($row = mysqli_fetch_assoc($result)) {
+                    
+                    echo "<tr>";
+                    foreach ($row as $value) {
+                        echo "<td>$value</td>";
+                    }
+                    echo "</tr>";
+                }      
+                echo "</table>";
+            } else {
+                echo "No result";
+            }
+          
+    }
+    catch (Exception $e) {
+        die($e->getMessage());
+    }
+    }
+    showTable1("student",$connect,["StudentID","course"]);
 ?>
